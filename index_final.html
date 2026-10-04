@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#050505">
+<meta name="description" content="INFINITY — Premium digital art and NFT gallery.">
+<title>INFINITY — Digital Art</title>
+
+<style>
+:root{
+  --bg:#050505;
+  --bg2:#0a0a0a;
+  --card:#101010;
+  --card2:#151515;
+  --gold:#ffd700;
+  --gold2:#ffb800;
+  --white:#f5f5f5;
+  --muted:#929292;
+  --line:rgba(255,215,0,.16);
+  --danger:#ff4d67;
+  --shadow:0 20px 60px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:
+    radial-gradient(circle at 50% -10%,rgba(255,215,0,.09),transparent 34%),
+    var(--bg);
+  color:var(--white);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+body.modal-open{overflow:hidden}
+button,input{font:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+
+.bg-glow{
+  position:fixed;
+  width:420px;height:420px;
+  border-radius:50%;
+  background:rgba(255,215,0,.055);
+  filter:blur(90px);
+  pointer-events:none;
+  z-index:-1;
+  top:20%;
+  left:-180px;
+}
+.bg-glow.two{top:65%;left:auto;right:-180px}
+
+header{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:rgba(5,5,5,.82);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+.nav{
+  width:min(1180px,92%);
+  margin:auto;
+  min-height:72px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+}
+.logo{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  font-weight:900;
+  letter-spacing:2px;
+  font-size:20px;
+}
+.logo span{
+  color:var(--gold);
+  font-size:30px;
+  line-height:1;
+  text-shadow:0 0 18px rgba(255,215,0,.4);
+}
+.nav-links{
+  display:flex;
+  align-items:center;
+  gap:26px;
+}
+.nav-links a{
+  color:#aaa;
+  font-size:14px;
+  transition:.25s;
+}
+.nav-links a:hover,.nav-links a.active{color:var(--gold)}
+.menu-btn{
+  display:none;
+  background:none;
+  border:1px solid #333;
+  color:white;
+  border-radius:10px;
+  width:42px;height:40px;
+}
+
+.hero{
+  width:min(1180px,92%);
+  margin:auto;
+  min-height:650px;
+  display:grid;
+  grid-template-columns:1.05fr .95fr;
+  align-items:center;
+  gap:50px;
+  padding:70px 0 60px;
+}
+.hero-copy{position:relative;z-index:2}
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  color:var(--gold);
+  border:1px solid var(--line);
+  background:rgba(255,215,0,.045);
+  border-radius:999px;
+  padding:9px 14px;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:1.2px;
+  margin-bottom:24px;
+}
+.hero h1{
+  font-size:clamp(48px,7vw,88px);
+  line-height:.94;
+  letter-spacing:-4px;
+  margin-bottom:24px;
+}
+.hero h1 span{
+  color:var(--gold);
+  text-shadow:0 0 35px rgba(255,215,0,.17);
+}
+.hero p{
+  color:var(--muted);
+  line-height:1.8;
+  max-width:560px;
+  font-size:16px;
+}
+.hero-actions{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:30px;
+}
+.btn{
+  border:0;
+  border-radius:12px;
+  padding:13px 20px;
+  font-weight:800;
+  transition:.25s;
+}
+.btn-gold{
+  background:var(--gold);
+  color:#050505;
+  box-shadow:0 8px 30px rgba(255,215,0,.13);
+}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 12px 35px rgba(255,215,0,.23)}
+.btn-dark{
+  color:white;
+  background:#111;
+  border:1px solid #2d2d2d;
+}
+.btn-dark:hover{border-color:var(--gold);color:var(--gold)}
+
+.hero-art{
+  min-height:440px;
+  display:grid;
+  place-items:center;
+  position:relative;
+}
+.orbit{
+  width:min(390px,82vw);
+  aspect-ratio:1;
+  border:1px solid rgba(255,215,0,.2);
+  border-radius:50%;
+  position:relative;
+  animation:spin 18s linear infinite;
+}
+.orbit:before,.orbit:after{
+  content:"";
+  position:absolute;
+  inset:12%;
+  border:1px solid rgba(255,215,0,.12);
+  border-radius:50%;
+}
+.orbit:after{inset:25%;border-color:rgba(255,255,255,.08)}
+.orb-dot{
+  position:absolute;
+  width:11px;height:11px;
+  border-radius:50%;
+  background:var(--gold);
+  box-shadow:0 0 22px var(--gold);
+  top:7%;left:50%;
+}
+.hero-cube{
+  position:absolute;
+  width:190px;height:190px;
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.16),transparent 30%),
+    radial-gradient(circle at 35% 30%,#fff7a0 0 2%,#d2a600 17%,#332800 55%,#080808 75%);
+  border:1px solid rgba(255,215,0,.65);
+  transform:rotate(20deg) skewY(-7deg);
+  box-shadow:
+    0 0 45px rgba(255,215,0,.14),
+    inset -25px -25px 60px rgba(0,0,0,.7);
+  animation:float 4s ease-in-out infinite;
+}
+.hero-cube:before{
+  content:"∞";
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  font-size:110px;
+  font-weight:900;
+  color:rgba(255,215,0,.65);
+  text-shadow:0 0 25px rgba(255,215,0,.35);
+  transform:skewY(7deg) rotate(-20deg);
+}
+.hero-label{
+  position:absolute;
+  bottom:8%;
+  right:3%;
+  padding:10px 13px;
+  border:1px solid var(--line);
+  background:rgba(10,10,10,.75);
+  backdrop-filter:blur(8px);
+  border-radius:10px;
+  color:#aaa;
+  font-size:11px;
+}
+
+.stats{
+  width:min(900px,92%);
+  margin:0 auto 80px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:18px;
+  overflow:hidden;
+  background:rgba(255,255,255,.018);
+}
+.stat{text-align:center;padding:24px 12px;border-right:1px solid rgba(255,255,255,.07)}
+.stat:last-child{border-right:0}
+.stat strong{display:block;color:var(--gold);font-size:28px;margin-bottom:5px}
+.stat span{font-size:11px;color:#777;text-transform:uppercase;letter-spacing:1px}
+
+section{scroll-margin-top:90px}
+.section{
+  width:min(1180px,92%);
+  margin:0 auto;
+  padding:40px 0 90px;
+}
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  gap:20px;
+  margin-bottom:28px;
+}
+.section-kicker{
+  color:var(--gold);
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:2px;
+  margin-bottom:8px;
+}
+.section h2{
+  font-size:clamp(30px,4vw,48px);
+  letter-spacing:-1.5px;
+}
+.section-head p{color:#777;font-size:13px}
+
+.toolbar{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:28px;
+}
+.search-box{
+  flex:1 1 230px;
+  position:relative;
+}
+.search-box input{
+  width:100%;
+  background:#0e0e0e;
+  border:1px solid #292929;
+  color:white;
+  border-radius:12px;
+  padding:13px 15px 13px 42px;
+  outline:none;
+}
+.search-box input:focus{border-color:var(--gold)}
+.search-icon{
+  position:absolute;
+  left:14px;
+  top:50%;
+  transform:translateY(-50%);
+  color:#777;
+}
+.filters{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.filter{
+  background:#0e0e0e;
+  color:#888;
+  border:1px solid #292929;
+  border-radius:12px;
+  padding:11px 14px;
+  font-size:12px;
+}
+.filter:hover,.filter.active{color:#050505;background:var(--gold);border-color:var(--gold)}
+
+.gallery{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+}
+.nft-card{
+  background:linear-gradient(145deg,#141414,#0b0b0b);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:18px;
+  overflow:hidden;
+  position:relative;
+  transition:.3s;
+}
+.nft-card:hover{
+  transform:translateY(-7px);
+  border-color:rgba(255,215,0,.38);
+  box-shadow:var(--shadow);
+}
+.art{
+  height:280px;
+  position:relative;
+  overflow:hidden;
+  display:grid;
+  place-items:center;
+}
+.art:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(120deg,transparent 35%,rgba(255,255,255,.08) 50%,transparent 65%);
+  transform:translateX(-130%);
+  transition:.7s;
+}
+.nft-card:hover .art:after{transform:translateX(130%)}
+.art-symbol{
+  position:relative;
+  z-index:2;
+  font-size:92px;
+  filter:drop-shadow(0 0 20px rgba(255,215,0,.25));
+}
+.art.one{
+  background:
+    radial-gradient(circle at 65% 30%,#fff8a8 0 3%,#e2b900 10%,transparent 24%),
+    radial-gradient(circle at 35% 70%,#6e5600,transparent 33%),
+    linear-gradient(135deg,#020202,#302500 50%,#050505);
+}
+.art.two{
+  background:
+    radial-gradient(circle at 25% 30%,#fff 0 1%,#d5b000 12%,transparent 25%),
+    radial-gradient(circle at 75% 70%,#9b7900,transparent 30%),
+    repeating-conic-gradient(from 20deg,#0b0b0b 0 10deg,#211a00 10deg 20deg);
+}
+.art.three{
+  background:
+    radial-gradient(circle at 50% 50%,#b89400 0 8%,transparent 9%),
+    radial-gradient(circle at 30% 25%,#222,transparent 30%),
+    linear-gradient(145deg,#020b10,#0c2630 45%,#020202);
+}
+.art.four{
+  background:
+    radial-gradient(circle at 55% 45%,#fff6a0 0 2%,#b08d00 7%,transparent 18%),
+    radial-gradient(circle at 80% 20%,#8b6f00,transparent 15%),
+    radial-gradient(circle at 20% 80%,#252525,transparent 30%),
+    #030303;
+}
+.art.five{
+  background:
+    repeating-linear-gradient(120deg,transparent 0 12px,rgba(255,215,0,.12) 13px 14px),
+    radial-gradient(circle at 50% 50%,#ffdf37,transparent 13%),
+    linear-gradient(135deg,#030303,#172018,#030303);
+}
+.art.six{
+  background:
+    radial-gradient(circle at 50% 50%,#fff3a0 0 2%,#ffd700 4%,transparent 17%),
+    repeating-radial-gradient(circle at center,#3c3000 0 2px,#080808 3px 12px);
+}
+.card-body{padding:16px}
+.card-top{display:flex;justify-content:space-between;gap:10px;align-items:start}
+.card-body h3{font-size:17px;margin-bottom:6px}
+.card-body .type{color:#777;font-size:11px;text-transform:uppercase;letter-spacing:1px}
+.like-btn{
+  width:36px;height:36px;border-radius:10px;
+  background:#181818;border:1px solid #292929;
+  color:#888;font-size:17px;
+}
+.like-btn:hover{border-color:var(--danger);color:var(--danger)}
+.like-btn.liked{color:var(--danger);border-color:rgba(255,77,103,.45);background:rgba(255,77,103,.07)}
+.card-bottom{
+  margin-top:18px;
+  padding-top:14px;
+  border-top:1px solid rgba(255,255,255,.07);
+  display:flex;align-items:end;justify-content:space-between;gap:10px;
+}
+.price small{display:block;color:#666;font-size:10px;margin-bottom:4px}
+.price strong{color:var(--gold);font-size:17px}
+.view-btn{
+  border:1px solid #303030;
+  background:#161616;color:white;
+  padding:9px 12px;border-radius:9px;font-size:11px;font-weight:700;
+}
+.view-btn:hover{border-color:var(--gold);color:var(--gold)}
+
+.empty{
+  grid-column:1/-1;
+  text-align:center;
+  color:#777;
+  padding:60px 10px;
+  border:1px dashed #292929;
+  border-radius:16px;
+}
+
+.about{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:22px;
+}
+.about-card{
+  border:1px solid rgba(255,255,255,.07);
+  background:#0c0c0c;
+  border-radius:18px;
+  padding:28px;
+}
+.about-card h3{margin-bottom:12px;color:var(--gold)}
+.about-card p{color:#858585;line-height:1.8;font-size:14px}
+.feature-list{display:grid;gap:12px;margin-top:18px}
+.feature{
+  display:flex;gap:12px;align-items:center;
+  color:#aaa;font-size:13px;
+}
+.feature b{color:var(--gold)}
+
+.creator{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  gap:20px;
+  align-items:center;
+  padding:28px;
+  border:1px solid rgba(255,215,0,.14);
+  background:linear-gradient(135deg,rgba(255,215,0,.05),#0b0b0b);
+  border-radius:20px;
+}
+.avatar{
+  width:70px;height:70px;border-radius:50%;
+  display:grid;place-items:center;
+  color:#050505;background:var(--gold);
+  font-size:28px;font-weight:900;
+  box-shadow:0 0 35px rgba(255,215,0,.16);
+}
+.creator h3{margin-bottom:6px}
+.creator p{color:#777;font-size:13px}
+
+footer{
+  border-top:1px solid rgba(255,255,255,.07);
+  padding:35px 4%;
+  color:#666;
+  font-size:12px;
+  text-align:center;
+}
+footer b{color:var(--gold)}
+
+.modal{
+  position:fixed;
+  inset:0;
+  z-index:100;
+  display:none;
+  place-items:center;
+  padding:18px;
+  background:rgba(0,0,0,.78);
+  backdrop-filter:blur(10px);
+}
+.modal.show{display:grid}
+.modal-box{
+  width:min(760px,100%);
+  max-height:90vh;
+  overflow:auto;
+  background:#0c0c0c;
+  border:1px solid rgba(255,215,0,.2);
+  border-radius:20px;
+  box-shadow:0 30px 100px #000;
+}
+.modal-content{display:grid;grid-template-columns:.9fr 1.1fr}
+.modal-art{min-height:390px;display:grid;place-items:center}
+.modal-info{padding:30px}
+.modal-info .tag{
+  display:inline-block;
+  color:var(--gold);
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:1.5px;
+  margin-bottom:10px;
+}
+.modal-info h2{font-size:34px;margin-bottom:10px}
+.modal-info p{color:#777;line-height:1.7;font-size:13px}
+.modal-price{margin:25px 0;font-size:25px;color:var(--gold);font-weight:900}
+.close{
+  position:absolute;
+  top:18px;right:18px;
+  width:42px;height:42px;
+  border-radius:50%;
+  border:1px solid #444;
+  background:#111;
+  color:white;
+  font-size:20px;
+  z-index:2;
+}
+.close:hover{color:var(--gold);border-color:var(--gold)}
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:25px;
+  transform:translate(-50%,20px);
+  opacity:0;
+  pointer-events:none;
+  z-index:200;
+  background:#151515;
+  border:1px solid rgba(255,215,0,.3);
+  color:white;
+  padding:12px 18px;
+  border-radius:12px;
+  font-size:12px;
+  box-shadow:var(--shadow);
+  transition:.3s;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes float{0%,100%{transform:rotate(20deg) skewY(-7deg) translateY(0)}50%{transform:rotate(24deg) skewY(-7deg) translateY(-14px)}}
+
+@media(max-width:850px){
+  .hero{grid-template-columns:1fr;min-height:auto;padding-top:55px}
+  .hero-copy{text-align:center}
+  .hero-copy p{margin:auto}
+  .hero-actions{justify-content:center}
+  .hero-art{min-height:390px}
+  .gallery{grid-template-columns:repeat(2,1fr)}
+  .about{grid-template-columns:1fr}
+  .creator{grid-template-columns:auto 1fr}
+  .creator .btn{grid-column:1/-1;width:100%}
+}
+@media(max-width:620px){
+  .nav{min-height:64px}
+  .menu-btn{display:block}
+  .nav-links{
+    display:none;
+    position:absolute;
+    left:4%;
+    right:4%;
+    top:70px;
+    background:#0b0b0b;
+    border:1px solid #292929;
+    border-radius:14px;
+    padding:12px;
+    flex-direction:column;
+    align-items:stretch;
+    gap:0;
+  }
+  .nav-links.open{display:flex}
+  .nav-links a{padding:13px 12px;border-radius:9px}
+  .nav-links a:hover{background:#161616}
+  .hero{padding-top:45px}
+  .hero h1{letter-spacing:-2px}
+  .hero-art{min-height:320px}
+  .orbit{width:285px}
+  .hero-cube{width:140px;height:140px}
+  .hero-cube:before{font-size:80px}
+  .stats{grid-template-columns:1fr;margin-bottom:45px}
+  .stat{border-right:0;border-bottom:1px solid rgba(255,255,255,.07)}
+  .stat:last-child{border-bottom:0}
+  .section{padding-bottom:65px}
+  .section-head{display:block}
+  .section-head p{margin-top:8px}
+  .gallery{grid-template-columns:1fr}
+  .art{height:300px}
+  .modal-content{grid-template-columns:1fr}
+  .modal-art{min-height:260px}
+  .modal-info{padding:22px}
+  .modal-info h2{font-size:28px}
+}
+</style>
+</head>
+
+<body>
+<div class="bg-glow"></div>
+<div class="bg-glow two"></div>
+
+<header>
+  <nav class="nav">
+    <a class="logo" href="#home" aria-label="INFINITY home"><span>∞</span> INFINITY</a>
+    <button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
+    <div class="nav-links" id="navLinks">
+      <a class="active" href="#home">Home</a>
+      <a href="#explore">Explore</a>
+      <a href="#about">About</a>
+      <a href="#creator">Creator</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+<section class="hero" id="home">
+  <div class="hero-copy">
+    <div class="badge">✦ THE FUTURE OF DIGITAL ART</div>
+    <h1>Enter the <span>INFINITY.</span></h1>
+    <p>
+      Discover a curated universe of digital artworks where futuristic 3D
+      aesthetics meet elegant black and gold abstraction.
+    </p>
+    <div class="hero-actions">
+      <a class="btn btn-gold" href="#explore">Explore Collection</a>
+      <a class="btn btn-dark" href="#about">Discover INFINITY</a>
+    </div>
+  </div>
+
+  <div class="hero-art" aria-hidden="true">
+    <div class="orbit">
+      <div class="orb-dot"></div>
+    </div>
+    <div class="hero-cube"></div>
+    <div class="hero-label">DIGITAL ART • 01 / 06</div>
+  </div>
+</section>
+
+<div class="stats">
+  <div class="stat"><strong>120+</strong><span>Artworks</span></div>
+  <div class="stat"><strong>35+</strong><span>Creators</span></div>
+  <div class="stat"><strong>18 ETH</strong><span>Volume</span></div>
+</div>
+
+<section class="section" id="explore">
+  <div class="section-head">
+    <div>
+      <div class="section-kicker">COLLECTION</div>
+      <h2>Explore the Art</h2>
+    </div>
+    <p id="resultCount">6 artworks</p>
+  </div>
+
+  <div class="toolbar">
+    <div class="search-box">
+      <span class="search-icon">⌕</span>
+      <input id="searchInput" type="search" placeholder="Search artwork..." autocomplete="off">
+    </div>
+    <div class="filters" id="filters">
+      <button class="filter active" data-filter="all">All</button>
+      <button class="filter" data-filter="art">Art</button>
+      <button class="filter" data-filter="abstract">Abstract</button>
+      <button class="filter" data-filter="cyber">Cyber</button>
+      <button class="filter" data-filter="space">Space</button>
+    </div>
+  </div>
+
+  <div class="gallery" id="gallery"></div>
+</section>
+
+<section class="section" id="about">
+  <div class="section-head">
+    <div>
+      <div class="section-kicker">THE VISION</div>
+      <h2>Built for the next era.</h2>
+    </div>
+  </div>
+
+  <div class="about">
+    <div class="about-card">
+      <h3>What is INFINITY?</h3>
+      <p>
+        INFINITY is a digital art concept built around a simple idea:
+        technology has no edge. Every artwork is designed to feel like a
+        small portal into another visual universe.
+      </p>
+      <div class="feature-list">
+        <div class="feature"><b>✦</b> Premium dark visual identity</div>
+        <div class="feature"><b>✦</b> Futuristic and abstract artworks</div>
+        <div class="feature"><b>✦</b> Responsive mobile-first experience</div>
+      </div>
+    </div>
+    <div class="about-card">
+      <h3>Marketplace Ready</h3>
+      <p>
+        The interface is prepared for a future marketplace connection.
+        Wallet login, real blockchain ownership and real purchases can be
+        connected later without changing the visual identity.
+      </p>
+      <div class="feature-list">
+        <div class="feature"><b>01</b> Browse and search</div>
+        <div class="feature"><b>02</b> Save favorites locally</div>
+        <div class="feature"><b>03</b> View artwork details</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="creator">
+  <div class="section-head">
+    <div>
+      <div class="section-kicker">CREATOR</div>
+      <h2>The mind behind INFINITY</h2>
+    </div>
+  </div>
+
+  <div class="creator">
+    <div class="avatar">∞</div>
+    <div>
+      <h3>INFINITY Studio</h3>
+      <p>Independent digital art studio • Future-focused visual design</p>
+    </div>
+    <button class="btn btn-gold" id="contactBtn">Contact Creator</button>
+  </div>
+</section>
+</main>
+
+<footer>
+  © 2026 <b>INFINITY</b> — Digital Art. Built for the future.
+</footer>
+
+<div class="modal" id="modal" aria-hidden="true">
+  <div class="modal-box">
+    <button class="close" id="closeModal" aria-label="Close">×</button>
+    <div class="modal-content">
+      <div class="modal-art" id="modalArt"></div>
+      <div class="modal-info">
+        <span class="tag" id="modalType">DIGITAL ART</span>
+        <h2 id="modalTitle">Artwork</h2>
+        <p id="modalDescription">Description</p>
+        <div class="modal-price" id="modalPrice">0.00 ETH</div>
+        <button class="btn btn-gold" id="buyBtn">Buy NFT</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const artworks = [
+  {
+    id:"a1",
+    title:"Golden Spirit",
+    type:"art",
+    label:"ART",
+    price:"0.08 ETH",
+    symbol:"✦",
+    className:"one",
+    description:"A luminous golden form floating between shadow and light — a symbol of endless creation."
+  },
+  {
+    id:"a2",
+    title:"Digital Dream",
+    type:"abstract",
+    label:"ABSTRACT",
+    price:"0.12 ETH",
+    symbol:"◇",
+    className:"two",
+    description:"A geometric dream built from light, depth and controlled digital chaos."
+  },
+  {
+    id:"a3",
+    title:"Cyber Turtle",
+    type:"cyber",
+    label:"CYBER",
+    price:"0.15 ETH",
+    symbol:"🐢",
+    className:"three",
+    description:"A playful cyber creature imagined for a future where nature and technology coexist."
+  },
+  {
+    id:"a4",
+    title:"Shadow World",
+    type:"space",
+    label:"SPACE",
+    price:"0.20 ETH",
+    symbol:"◉",
+    className:"four",
+    description:"A mysterious world hidden inside a golden eclipse, surrounded by infinite darkness."
+  },
+  {
+    id:"a5",
+    title:"Neon Future",
+    type:"cyber",
+    label:"CYBER",
+    price:"0.25 ETH",
+    symbol:"⚡",
+    className:"five",
+    description:"Electric lines and futuristic energy form a vision of tomorrow's digital cities."
+  },
+  {
+    id:"a6",
+    title:"Golden Matrix",
+    type:"abstract",
+    label:"ABSTRACT",
+    price:"0.30 ETH",
+    symbol:"∞",
+    className:"six",
+    description:"An infinite golden pattern representing data, mathematics and the endless digital universe."
+  }
+];
+
+const gallery = document.getElementById("gallery");
+const searchInput = document.getElementById("searchInput");
+const filters = document.getElementById("filters");
+const resultCount = document.getElementById("resultCount");
+const modal = document.getElementById("modal");
+const modalArt = document.getElementById("modalArt");
+const modalTitle = document.getElementById("modalTitle");
+const modalType = document.getElementById("modalType");
+const modalDescription = document.getElementById("modalDescription");
+const modalPrice = document.getElementById("modalPrice");
+const buyBtn = document.getElementById("buyBtn");
+const toast = document.getElementById("toast");
+const menuBtn = document.getElementById("menuBtn");
+const navLinks = document.getElementById("navLinks");
+
+let currentFilter = "all";
+let currentArtwork = null;
+let liked = JSON.parse(localStorage.getItem("infinityLikes") || "[]");
+
+function saveLikes(){
+  localStorage.setItem("infinityLikes", JSON.stringify(liked));
+}
+
+function showToast(message){
+  toast.textContent = message;
+  toast.classList.add("show");
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => toast.classList.remove("show"), 2200);
+}
+
+function toggleLike(id){
+  if(liked.includes(id)){
+    liked = liked.filter(item => item !== id);
+    showToast("Removed from favorites");
+  }else{
+    liked.push(id);
+    showToast("Added to favorites ♥");
+  }
+  saveLikes();
+  render();
+}
+
+function openModal(item){
+  currentArtwork = item;
+  modalArt.className = "modal-art art " + item.className;
+  modalArt.innerHTML = '<div class="art-symbol">' + item.symbol + '</div>';
+  modalTitle.textContent = item.title;
+  modalType.textContent = item.label;
+  modalDescription.textContent = item.description;
+  modalPrice.textContent = item.price;
+  modal.classList.add("show");
+  modal.setAttribute("aria-hidden","false");
+  document.body.classList.add("modal-open");
+}
+
+function closeModal(){
+  modal.classList.remove("show");
+  modal.setAttribute("aria-hidden","true");
+  document.body.classList.remove("modal-open");
+}
+
+function render(){
+  const query = searchInput.value.trim().toLowerCase();
+
+  const visible = artworks.filter(item => {
+    const matchesFilter = currentFilter === "all" || item.type === currentFilter;
+    const matchesSearch =
+      item.title.toLowerCase().includes(query) ||
+      item.type.toLowerCase().includes(query) ||
+      item.label.toLowerCase().includes(query);
+
+    return matchesFilter && matchesSearch;
+  });
+
+  resultCount.textContent = visible.length + (visible.length === 1 ? " artwork" : " artworks");
+
+  if(!visible.length){
+    gallery.innerHTML = '<div class="empty">No artwork found.<br><br>Try another search or category.</div>';
+    return;
+  }
+
+  gallery.innerHTML = visible.map(item => {
+    const isLiked = liked.includes(item.id);
+
+    return `
+      <article class="nft-card">
+        <div class="art ${item.className}">
+          <div class="art-symbol">${item.symbol}</div>
+        </div>
+        <div class="card-body">
+          <div class="card-top">
+            <div>
+              <h3>${item.title}</h3>
+              <div class="type">${item.label}</div>
+            </div>
+            <button class="like-btn ${isLiked ? "liked" : ""}"
+              onclick="toggleLike('${item.id}')"
+              aria-label="Favorite ${item.title}">
+              ${isLiked ? "♥" : "♡"}
+            </button>
+          </div>
+          <div class="card-bottom">
+            <div class="price">
+              <small>PRICE</small>
+              <strong>${item.price}</strong>
+            </div>
+            <button class="view-btn" onclick="openArtwork('${item.id}')">View</button>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+function openArtwork(id){
+  const item = artworks.find(art => art.id === id);
+  if(item) openModal(item);
+}
+
+searchInput.addEventListener("input", render);
+
+filters.addEventListener("click", event => {
+  const button = event.target.closest(".filter");
+  if(!button) return;
+
+  document.querySelectorAll(".filter").forEach(btn => btn.classList.remove("active"));
+  button.classList.add("active");
+  currentFilter = button.dataset.filter;
+  render();
+});
+
+document.getElementById("closeModal").addEventListener("click", closeModal);
+
+modal.addEventListener("click", event => {
+  if(event.target === modal) closeModal();
+});
+
+document.addEventListener("keydown", event => {
+  if(event.key === "Escape") closeModal();
+});
+
+buyBtn.addEventListener("click", () => {
+  if(currentArtwork){
+    showToast("Marketplace connection coming soon");
+  }
+});
+
+document.getElementById("contactBtn").addEventListener("click", () => {
+  showToast("Creator contact will be connected soon");
+});
+
+menuBtn.addEventListener("click", () => {
+  navLinks.classList.toggle("open");
+});
+
+navLinks.addEventListener("click", event => {
+  if(event.target.tagName === "A"){
+    navLinks.classList.remove("open");
+  }
+});
+
+const sections = document.querySelectorAll("main section");
+const navAnchors = document.querySelectorAll(".nav-links a");
+
+window.addEventListener("scroll", () => {
+  let current = "home";
+
+  sections.forEach(section => {
+    if(window.scrollY >= section.offsetTop - 130){
+      current = section.id;
+    }
+  });
+
+  navAnchors.forEach(anchor => {
+    anchor.classList.toggle("active", anchor.getAttribute("href") === "#" + current);
+  });
+});
+
+render();
+</script>
+</body>
+</html>
